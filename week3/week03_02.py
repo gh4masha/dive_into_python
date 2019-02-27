@@ -38,6 +38,11 @@ class Truck(CarBase):
         super().__init__(brand, photo_file_name, carrying)
         self.car_type = 'truck'
         self.body_whl = body_whl or None
+        if self.body_whl is not None:
+            sizes = self.body_whl.split('x');
+            self.body_length=float(sizes[0])
+            self.body_width = float(sizes[1])
+            self.body_height = float(sizes[2])
 
 
 class SpecMachine(CarBase):
@@ -60,17 +65,17 @@ def get_car_list(csv_filename):
             try:
                 if row[0] == 'car':
                     if row[1] is not None and row[3] is not None and row[5] is not None and row[2] is not None:
-                        car = Car(row[1], row[3], row[5], row[2])
+                        car = Car(row[1], row[3], float(row[5]), int(row[2]))
                         car_list.append(car)
                 elif row[0] == 'truck':
                     if row[1] is not None and row[3] is not None and row[5] is not None :
-                        truck = Truck(row[1], row[3], row[5], row[4] or None)
+                        truck = Truck(row[1], row[3], float(row[5]), row[4] or None)
                         car_list.append(truck)
                 elif row[0] == 'spec_machine':
                     if row[1] is not None and row[3] is not None and row[5] is not None and row[6] is not None:
-                        spec_machine = SpecMachine(row[1], row[3], row[5], row[6] or None)
+                        spec_machine = SpecMachine(row[1], row[3],float( row[5]), row[6] or None)
                         car_list.append(spec_machine)
-            except LookupError:
+            except (LookupError, ArithmeticError):
                 pass
 
     #     0       1             2                   3               4         5        6
@@ -79,4 +84,4 @@ def get_car_list(csv_filename):
     return car_list
 
 
-get_car_list('D:\learn\python\dive_into_python\week3\coursera_week3_cars.csv')
+# get_car_list('/home/masha/dive_into_python/dive_into_python/week3/coursera_week3_cars.csv')
