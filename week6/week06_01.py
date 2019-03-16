@@ -1,35 +1,50 @@
 # server
 
 import asyncio
-
+import threading
 
 class ClientServerProtocol(asyncio.Protocol):
+    
+    def __init__(self):
+        super(ClientServerProtocol, self).__init__()
+        self.mutex = threading.RLock()
+        
     def connection_made(self, transport):
+        
         self.transport = transport
 
     storage = {}
 
     def data_received(self, data):
-        resp = self.process_data(data.decode())
+        resp = self.process_data(data.decode('utf8'))
         if resp is None:
             self.transport.write('error\n\n'.encode('utf8'))
         else:
-            self.transport.write(resp.encode())
-
+            # print('storage:',self.storage)
+            # print(data,resp)
+            self.transport.write(str(resp).encode('utf8'))
 
     def get_metrics(self, metric):
-        result = ''
-        if metric == '*':
-            for key in self.storage:
-                for items in self.storage.get(key):
-                    result = key + ' ' + items[1] + items[0] + '\n'
-        elif self.storage.get(metric) is not None:
-            for items in self.storage.get(metric):
-                result = metric + ' ' + items[1] + items[0] + '\n'
-        else:
-            return 'error\n\n'
+        with self.mutex:
+            result = ''
 
-        return result
+            metric = metric.replace(' ', '')
+            metric = metric.replace('\n', '')
+            if metric == '*':
+                # return self.storage
+                for key in self.storage:
+                    for items in self.storage.get(key):
+                        # print('get ********* ', key,items[0],items[1], '*********')
+                        result = result + str(key) + ' ' + str(items[0]) + ' ' + str(items[1]) + '\n'
+                        # print('--------------------------------',result)
+            elif self.storage.get(metric) is not None:
+                # return self.storage.get(metric)
+                for items in self.storage.get(metric):
+                    result = result + metric + ' ' + str(items[0]) + ' ' + str(items[1]) + '\n'
+            else:
+                return 'ok\n\n'
+            result = 'ok\n'+result+'\n'
+            return result
 
     def process_data(self, request):
         parts_of_request = request.split(' ')
@@ -48,18 +63,21 @@ class ClientServerProtocol(asyncio.Protocol):
         return 'error\n\n'
 
     def put_metrics(self, name, value, time):
-        try:
-            if self.storage.get(name) is not None:
+        with self.mutex:
+            time=time.replace('\n','')
+            time=time.replace(' ','')
+            try:
+                if self.storage.get(name) is not None:
+                    t = self.storage.get(name)
+                    if (float(value), int(time)) not in t:
+                        t.append((float(value), int(time)))
+                        self.storage.update({name: t})
 
-                t = self.storage.get(name)
-                t.append((int(time), float(value)))
-                self.storage.update({name: t})
-
-            else:
-                self.storage[name] = [(int(time), float(value))]
-            return 'ok\n\n'
-        except Exception:
-            return 'error\n\n'
+                else:
+                    self.storage[name] = [(float(value), int(time))]
+                return 'ok\n\n'
+            except Exception:
+                return 'error\n\n'
 
 
 def run_server(host, port):
