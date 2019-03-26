@@ -1,0 +1,34 @@
+
+
+class Vec2d:
+
+    def __add__(self, other):
+        pass
+
+    def __sub__(self, other):
+        pass
+
+    def __mull__(self, s):
+        pass
+
+    def __mull__(self, other):
+        pass
+
+    def len(self):
+        pass
+
+
+class Polyline:
+    def add_point(self, point):
+        pass
+
+    def set_points(self):
+        pass
+
+    def draw_points(self):
+        pass
+
+
+class Knot(Polyline):
+    def get_knot(self):
+        pass
