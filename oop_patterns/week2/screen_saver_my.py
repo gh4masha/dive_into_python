@@ -13,22 +13,20 @@ class Vec2d:
     def __add__(self, other):
         return Vec2d(self.x + other.x, self.y + other.y)
 
-
     def __sub__(self, other):
         return Vec2d(self.x - other.x, self.y - other.y)
 
+    def __mull__(self, k):
+        return Vec2d(self.x * k, self.y * k)
 
-    def __mull__(self, s):
-        pass
-
-    def __mull__(self, other):
+    def __scal_mull__(self, other):
         pass
 
     def len(self):
         pass
 
 
-class Polyline:
+class Polyline(Vec2d):
     def add_point(self, point):
         pass
 
@@ -155,8 +153,8 @@ if __name__ == "__main__":
         gameDisplay.fill((0, 0, 0))
         hue = (hue + 1) % 360
         color.hsla = (hue, 100, 50, 100)
-        draw_points(points)
-        draw_points(get_knot(points, steps), "line", 3, color)
+        knot.draw_points(points)
+        knot.draw_points(knot.get_knot(points, steps), "line", 3, color)
         if not pause:
             knot.set_points(points, speeds)
         if show_help:
