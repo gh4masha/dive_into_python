@@ -54,6 +54,7 @@ class Berserk(AbstractPositive):
 
     def __init__(self, base):
         super(base)
+        self.positive_effects.append("Berserk")
         self.stats.update("Strength", self.stats.get("Strength") + 7)
         self.stats.update("Endurance", self.stats.get("Endurance") + 7)
         self.stats.update("Agility", self.stats.get("Agility") + 7)
@@ -68,6 +69,16 @@ class Berserk(AbstractPositive):
 
 
 class Blessing(AbstractPositive):
+    def __init__(self, base):
+        super(base)
+        self.positive_effects.append("Blessing")
+        self.stats.update("Strength", self.stats.get("Strength") + 2)
+        self.stats.update("Endurance", self.stats.get("Endurance") + 2)
+        self.stats.update("Agility", self.stats.get("Agility") + 2)
+        self.stats.update("Luck", self.stats.get("Luck") + 2)
+        self.stats.update("Perception", self.stats.get("Perception") + 2)
+        self.stats.update("Charisma", self.stats.get("Charisma") + 2)
+        self.stats.update("Intelligence", self.stats.get("Intelligence") + 2)
 
 
 class AbstractNegative(AbstractEffect):
@@ -76,10 +87,29 @@ class AbstractNegative(AbstractEffect):
 
 
 class Weakness(AbstractNegative):
-    pass
+    def __init__(self, base):
+        super(base)
+        self.negative_effects.append("Weakness")
+        self.stats.update("Strength", self.stats.get("Strength") - 4)
+        self.stats.update("Endurance", self.stats.get("Endurance") - 4)
+        self.stats.update("Agility", self.stats.get("Agility") - 4)
+
 
 class EvilEye(AbstractNegative):
-    pass
+    def __init__(self, base):
+        super(base)
+        self.negative_effects.append("EvilEye")
+        self.stats.update("Luck", self.stats.get("Luck") - 10)
+
 
 class Curse(AbstractNegative):
-    pass
+    def __init__(self, base):
+        super(base)
+        self.negative_effects.append("Curse")
+        self.stats.update("Strength", self.stats.get("Strength") - 2)
+        self.stats.update("Endurance", self.stats.get("Endurance") - 2)
+        self.stats.update("Agility", self.stats.get("Agility") - 2)
+        self.stats.update("Luck", self.stats.get("Luck") - 2)
+        self.stats.update("Perception", self.stats.get("Perception") - 2)
+        self.stats.update("Charisma", self.stats.get("Charisma") - 2)
+        self.stats.update("Intelligence", self.stats.get("Intelligence") - 2)
