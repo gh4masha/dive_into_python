@@ -4,6 +4,7 @@ import math
 
 SCREEN_DIM = (800, 600)
 
+
 class Vec2d:
 
     def __init__(self, x, y):
@@ -20,25 +21,27 @@ class Vec2d:
         return Vec2d(self.x * k, self.y * k)
 
     def __scal_mull__(self, other):
-        pass
+        return Vec2d(self.x * other.x, self.y * other.y)
 
     def len(self):
-        pass
+        return math.sqrt(self.x * self.x + self.y * self.y)
 
 
-class Polyline(Vec2d):
+class Polyline():
+    points = []
+
     def add_point(self, point):
-        pass
+        self.points.append(point)
 
-    def set_points(self):
-        pass
+    def set_points(self, points):
+        self.points = points
 
     # "Отрисовка" точек
     def draw_points(self, points, style="points", width=3, color=(255, 255, 255)):
         if style == "line":
             for p_n in range(-1, len(points) - 1):
-                pygame.draw.line(gameDisplay, color, (int(points[p_n][0]), int(points[p_n][1])),
-                                 (int(points[p_n + 1][0]), int(points[p_n + 1][1])), width)
+                pygame.draw.line(gameDisplay, color, (int(points[p_n].x), int(points[p_n].y)),
+                                 (int(points[p_n + 1].x), int(points[p_n + 1].y)), width)
 
         elif style == "points":
             for p in points:
@@ -54,8 +57,8 @@ class Knot(Polyline):
             deg = len(points) - 1
         if deg == 0:
             return points[0]
-        return super.__add__(super.__mul__(points[deg], alpha),
-                             super.__mul__(self.__get_point(points, alpha, deg - 1), 1 - alpha))
+        return points[deg].__mull__(alpha).__add__(
+            self.__get_point(points, alpha, deg - 1).__mull__(1 - alpha))
 
     def __get_points(self, base_points, count):
         alpha = 1 / count
@@ -67,7 +70,7 @@ class Knot(Polyline):
     # Персчитывание координат опорных точек
     def set_points(self, points, speeds):
         for p in range(len(points)):
-            points[p] = super.__add__(points[p], speeds[p])
+            points[p] = Vec2d(points[p]).__add__(speeds[p])
             if points[p][0] > SCREEN_DIM[0] or points[p][0] < 0:
                 speeds[p] = (- speeds[p][0], speeds[p][1])
             if points[p][1] > SCREEN_DIM[1] or points[p][1] < 0:
@@ -79,9 +82,12 @@ class Knot(Polyline):
         res = []
         for i in range(-2, len(points) - 2):
             ptn = []
-            ptn.append(super.__mul__(super.__add__(points[i], points[i + 1]), 0.5))
-            ptn.append(points[i + 1])
-            ptn.append(super.__mul__(super.__add__(points[i + 1], points[i + 2]), 0.5))
+            ptn.append(
+                Vec2d(points[i][0], points[i][1]).__add__(Vec2d(points[i + 1][0], points[i + 1][1])).__mull__(0.5))
+            ptn.append(Vec2d(points[i + 1][0], points[i + 1][1]))
+            ptn.append(
+                Vec2d(points[i + 1][0], points[i + 1][1]).__add__(Vec2d(points[i + 2][0], points[i + 2][1])).__mull__(
+                    0.5))
 
             res.extend(self.__get_points(ptn, count))
         return res
