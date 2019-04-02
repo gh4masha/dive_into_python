@@ -17,7 +17,7 @@ class Vec2d:
     def __sub__(self, other):
         return Vec2d(self.x - other.x, self.y - other.y)
 
-    def __mull__(self, k):
+    def __mul__(self, k):
         return Vec2d(self.x * k, self.y * k)
 
     def __scal_mull__(self, other):
