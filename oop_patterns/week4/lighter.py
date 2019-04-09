@@ -26,10 +26,24 @@ class MappingAdapter:
         pass
 
     def lighten(self, grid):
-        light = Light(len(grid), len(grid[0]))
-        light.set_lights()
-        light.set_obstacles()
-        pass
+        light = Light((len(grid), len(grid[0])))
+        light.set_dim((len(grid), len(grid[0])))
+
+        lights=[]
+        for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                if grid[i][j] == 1:
+                    lights.append((i, j))
+        obstacles=[]
+        for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                if grid[i][j] == -1:
+                    obstacles.append((i, j))
+
+        light.set_lights(lights)
+        light.set_obstacles(obstacles)
+        return light.generate_lights()
+
 
 
 class System:
@@ -40,5 +54,16 @@ class System:
 
     def get_lightening(self, light_mapper):
         self.lightmap = light_mapper.lighten(self.map)
+
+
+
+if __name__=='__main__':
+    system = System()
+    light = Light((len(system.map[0]), len(system.map)))
+    adapter = MappingAdapter(light)
+    system.get_lightening(adapter)
+    for i in range(len(system.lightmap)):
+        print(system.lightmap[i])
+
 
 
