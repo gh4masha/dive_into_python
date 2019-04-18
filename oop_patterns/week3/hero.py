@@ -34,17 +34,15 @@ class AbstractEffect(Hero, ABC):
     def __init__(self, base):
         super().__init__()
         self.base = base
-        self.stats = self.base.get_stats()
+        self.stats = self.base.get_stats().copy()
         self.positive_effects = self.base.positive_effects.copy()
         self.negative_effects = self.base.negative_effects.copy()
 
-    def get_stats(self):  # Возвращает итоговые хараетеристики
-        return self.stats.copy()
-
+    # def get_stats(self):  # Возвращает итоговые хараетеристики
+    #     return self.stats.copy()
 
     def get_positive_effects(self):
         return self.base.get_positive_effects()
-
 
     def get_negative_effects(self):
         return self.base.get_negative_effects()
@@ -64,6 +62,7 @@ class Berserk(AbstractPositive):
     def __init__(self, base):
         super().__init__(base)
 
+
     def get_positive_effects(self):
         eff = self.base.get_positive_effects()
         eff.append("Berserk")
@@ -71,16 +70,16 @@ class Berserk(AbstractPositive):
         # return self.positive_effects.copy()
 
     def get_stats(self):
-        stats=self.base.get_stats().copy()
-        stats["Strength"] = self.base.get_stats().get("Strength") + 7
-        stats["Endurance"] = self.base.get_stats().get("Endurance") + 7
-        stats["Agility"] = self.base.get_stats().get("Agility") + 7
-        stats["Luck"] = self.base.get_stats().get("Luck") + 7
-        stats["Perception"] = self.base.get_stats().get("Perception") - 3
-        stats["Charisma"] = self.base.get_stats().get("Charisma") - 3
-        stats["Intelligence"] = self.base.get_stats().get("Intelligence") - 3
-        stats["HP"] = self.base.get_stats().get("HP") + 50
-        return stats
+        stats = self.base.get_stats()
+        stats["Strength"] = stats.get("Strength") + 7
+        stats["Endurance"] = stats.get("Endurance") + 7
+        stats["Agility"] = stats.get("Agility") + 7
+        stats["Luck"] = stats.get("Luck") + 7
+        stats["Perception"] = stats.get("Perception") - 3
+        stats["Charisma"] = stats.get("Charisma") - 3
+        stats["Intelligence"] = stats.get("Intelligence") - 3
+        stats["HP"] = stats.get("HP") + 50
+        return stats.copy()
 
 
 class Blessing(AbstractPositive):
@@ -93,15 +92,15 @@ class Blessing(AbstractPositive):
         return eff.copy()
 
     def get_stats(self):
-        stats=self.base.get_stats().copy()
-        stats["Strength"] = self.base.get_stats().get("Strength") + 2
-        stats["Endurance"] = self.base.get_stats().get("Endurance") + 2
-        stats["Agility"] = self.base.get_stats().get("Agility") + 2
-        stats["Luck"] = self.base.get_stats().get("Luck") + 2
-        stats["Perception"] = self.base.get_stats().get("Perception") + 2
-        stats["Charisma"] = self.base.get_stats().get("Charisma") + 2
-        stats["Intelligence"] = self.base.get_stats().get("Intelligence") + 2
-        return stats
+        stats = self.base.get_stats()
+        stats["Strength"] = stats.get("Strength") + 2
+        stats["Endurance"] =stats.get("Endurance") + 2
+        stats["Agility"] = stats.get("Agility") + 2
+        stats["Luck"] = stats.get("Luck") + 2
+        stats["Perception"] = stats.get("Perception") + 2
+        stats["Charisma"] = stats.get("Charisma") + 2
+        stats["Intelligence"] = stats.get("Intelligence") + 2
+        return stats.copy()
 
 
 class AbstractNegative(AbstractEffect):
@@ -119,10 +118,10 @@ class Weakness(AbstractNegative):
         return eff.copy()
 
     def get_stats(self):
-        stats=self.base.get_stats().copy()
-        stats["Strength"] = self.base.get_stats().get("Strength") - 4
-        stats["Endurance"] = self.base.get_stats().get("Endurance") - 4
-        stats["Agility"] = self.base.get_stats().get("Agility") - 4
+        stats = self.base.get_stats()
+        stats["Strength"] = stats.get("Strength") - 4
+        stats["Endurance"] = stats.get("Endurance") - 4
+        stats["Agility"] = stats.get("Agility") - 4
         return stats
 
 
@@ -136,9 +135,9 @@ class EvilEye(AbstractNegative):
         return eff.copy()
 
     def get_stats(self):
-        stats=self.base.get_stats().copy()
-        stats["Luck"] = self.base.get_stats().get("Luck") - 10
-        return stats
+        stats = self.base.get_stats()
+        stats["Luck"] = stats.get("Luck") - 10
+        return stats.copy()
 
 
 class Curse(AbstractNegative):
@@ -151,63 +150,73 @@ class Curse(AbstractNegative):
         return eff.copy()
 
     def get_stats(self):
-        stats=self.base.get_stats().copy()
-        stats["Strength"] = self.base.get_stats().get("Strength") - 2
-        stats["Endurance"] = self.base.get_stats().get("Endurance") - 2
-        stats["Agility"] = self.base.get_stats().get("Agility") - 2
-        stats["Luck"] = self.base.get_stats().get("Luck") - 2
-        stats["Perception"] = self.base.get_stats().get("Perception") - 2
-        stats["Charisma"] = self.base.get_stats().get("Charisma") - 2
-        stats["Intelligence"] = self.base.get_stats().get("Intelligence") - 2
-        return stats
+        stats = self.base.get_stats()
+        stats["Strength"] = stats.get("Strength") - 2
+        stats["Endurance"] = stats.get("Endurance") - 2
+        stats["Agility"] = stats.get("Agility") - 2
+        stats["Luck"] = stats.get("Luck") - 2
+        stats["Perception"] = stats.get("Perception") - 2
+        stats["Charisma"] = stats.get("Charisma") - 2
+        stats["Intelligence"] = stats.get("Intelligence") - 2
+        return stats.copy()
 
 
 if __name__ == '__main__':
     hero = Hero()
-    hero = Hero()
 
     print(hero.get_stats())
-    # {'HP': 128, 'MP': 42, 'SP': 100, 'Strength': 15, 'Perception': 4, 'Endurance': 8, 'Charisma': 2, 'Intelligence': 3,'Agility': 8, 'Luck': 1}
-
-    print(hero.stats)
-    # {'HP': 128, 'MP': 42, 'SP': 100, 'Strength': 15, 'Perception': 4, 'Endurance': 8, 'Charisma': 2, 'Intelligence': 3, 'Agility': 8, 'Luck': 1}
-
-    print(hero.get_negative_effects())
-    # []
-
-    print(hero.get_positive_effects())
-    # []
-
-    # накладываем эффект
+    # # {'HP': 128, 'MP': 42, 'SP': 100, 'Strength': 15, 'Perception': 4, 'Endurance': 8, 'Charisma': 2, 'Intelligence': 3,'Agility': 8, 'Luck': 1}
+    #
+    # print(hero.stats)
+    # # {'HP': 128, 'MP': 42, 'SP': 100, 'Strength': 15, 'Perception': 4, 'Endurance': 8, 'Charisma': 2, 'Intelligence': 3, 'Agility': 8, 'Luck': 1}
+    #
+    # print(hero.get_negative_effects())
+    # # []
+    #
+    # print(hero.get_positive_effects())
+    # # []
+    #
+    # # накладываем эффект
     brs1 = Berserk(hero)
-    print(brs1.get_stats())
-    # {'HP': 178, 'MP': 42, 'SP': 100, 'Strength': 22, 'Perception': 1, 'Endurance': 15, 'Charisma': -1, 'Intelligence': 0, 'Agility': 15, 'Luck': 8}
+    # # for i in range(10):
+    # #     brs1 = Berserk(brs1)
+    # print(brs1.get_stats())
+    # # {'HP': 178, 'MP': 42, 'SP': 100, 'Strength': 22, 'Perception': 1, 'Endurance': 15, 'Charisma': -1, 'Intelligence': 0, 'Agility': 15, 'Luck': 8}
+    #
+    # print(brs1.get_negative_effects())
+    # # []
+    #
+    # print(brs1.get_positive_effects())
+    # # ['Berserk']
+    #
+    # # накладываем эффекты
+    # brs2 = Berserk(brs1)
+    # cur1 = Curse(brs2)
+    # print(cur1.get_stats())
+    # # {'HP': 228, 'MP': 42, 'SP': 100, 'Strength': 27, 'Perception': -4, 'Endurance': 20, 'Charisma': -6, 'Intelligence': -5, 'Agility': 20, 'Luck': 13}
+    #
+    # print(cur1.get_positive_effects())
+    # # ['Berserk', 'Berserk']
+    #
+    # print(cur1.get_negative_effects())
+    # # ['Curse']
+    #
+    # # снимаем эффект Berserk
+    # cur1.base = brs1
+    # print(cur1.get_stats())
+    # # {'HP': 178, 'MP': 42, 'SP': 100, 'Strength': 20, 'Perception': -1, 'Endurance': 13, 'Charisma': -3, 'Intelligence': -2, 'Agility': 13, 'Luck': 6}
+    #
+    # print(cur1.get_positive_effects())
+    # # ['Berserk']
+    #
+    # print(cur1.get_negative_effects())
+    # # ['Curse']
 
-    print(brs1.get_negative_effects())
-    # []
+    ey = EvilEye(hero)
+    ey1 = EvilEye(ey)
+    print(ey.get_stats())
 
-    print(brs1.get_positive_effects())
-    # ['Berserk']
-
-    # накладываем эффекты
-    brs2 = Berserk(brs1)
-    cur1 = Curse(brs2)
-    print(cur1.get_stats())
-    # {'HP': 228, 'MP': 42, 'SP': 100, 'Strength': 27, 'Perception': -4, 'Endurance': 20, 'Charisma': -6, 'Intelligence': -5, 'Agility': 20, 'Luck': 13}
-
-    print(cur1.get_positive_effects())
-    # ['Berserk', 'Berserk']
-
-    print(cur1.get_negative_effects())
-    # ['Curse']
-
-    # снимаем эффект Berserk
-    cur1.base = brs1
-    print(cur1.get_stats())
-    # {'HP': 178, 'MP': 42, 'SP': 100, 'Strength': 20, 'Perception': -1, 'Endurance': 13, 'Charisma': -3, 'Intelligence': -2, 'Agility': 13, 'Luck': 6}
-
-    print(cur1.get_positive_effects())
-    # ['Berserk']
-
-    print(cur1.get_negative_effects())
-    # ['Curse']
+    ey1.base = brs1
+    print(ey1.get_stats())
+    print(ey1.base)
+    # {'HP': 128, 'MP': 42, 'SP': 100, 'Strength': 15, 'Perception': 4, 'Endurance': 8, 'Charisma': 2, 'Intelligence': 3,'Agility': 8, 'Luck': -9}
