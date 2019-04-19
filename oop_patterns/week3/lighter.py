@@ -23,47 +23,47 @@ class Light:
 
 class MappingAdapter:
     def __init__(self, adaptee):
-        pass
+        self.adaptee = adaptee
 
     def lighten(self, grid):
-        light = Light((len(grid), len(grid[0])))
-        light.set_dim((len(grid), len(grid[0])))
 
-        lights=[]
+        self.adaptee.set_dim((len(grid[0]), len(grid)))
+
+        lights = []
         for i in range(len(grid)):
-            for j in range(len(grid[i])):
+            for j in range(len(grid[0])):
                 if grid[i][j] == 1:
-                    lights.append((i, j))
-        obstacles=[]
-        for i in range(len(grid)):
-            for j in range(len(grid[i])):
-                if grid[i][j] == -1:
-                    obstacles.append((i, j))
+                    lights.append((j, i))
+        obstacles = []
+        for ii in range(len(grid)):
+            for jj in range(len(grid[0])):
+                if grid[ii][jj] == -1:
+                    obstacles.append((jj, ii))
 
-        light.set_lights(lights)
-        light.set_obstacles(obstacles)
-        return light.generate_lights()
-
+        self.adaptee.set_lights(lights)
+        self.adaptee.set_obstacles(obstacles)
+        generatedmap = self.adaptee.generate_lights()
+        # result = [[0 for iii in range(len(generatedmap))] for _ in range(len(generatedmap[0]))]
+        # for i in range(len(generatedmap)):
+        #     for j in range(len(generatedmap[0])):
+        #         result[j][i] = generatedmap[i][j]
+        return generatedmap
 
 
 class System:
     def __init__(self):
-        self.map = self.grid = [[0 for i in range(30)] for _ in range(20)]
-        self.map[5][7] = 1  # Источники света
-        self.map[5][2] = -1  # Стены
+        self.map = self.grid = [[0 for i in range(30)] for _ in range(3)]
+        self.map[1][15] = 1  # Источники света
+        self.map[2][15] = -1  # Стены
 
     def get_lightening(self, light_mapper):
         self.lightmap = light_mapper.lighten(self.map)
 
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
     system = System()
     light = Light((len(system.map[0]), len(system.map)))
     adapter = MappingAdapter(light)
     system.get_lightening(adapter)
     for i in range(len(system.lightmap)):
         print(system.lightmap[i])
-
-
-
