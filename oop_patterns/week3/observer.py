@@ -1,6 +1,6 @@
 # {"title": "Покоритель", "text": "Дается при выполнении всех заданий в игре"}
 
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class Engine():
@@ -25,6 +25,7 @@ class ObservableEngine(Engine):
 
 
 class AbstractObserver(ABC):
+    @abstractmethod
     def update(self, achievement):
         pass
 
@@ -39,7 +40,7 @@ class ShortNotificationPrinter(AbstractObserver):
             self.achievements.append(achievement["title"])
 
 
-class FullNotificationPrinter():
+class FullNotificationPrinter(AbstractObserver):
 
     def __init__(self):
         self.achievements = list()
