@@ -37,7 +37,7 @@ class ShortNotificationPrinter(AbstractObserver):
 
     def update(self, achievement):
         if achievement["title"] not in self.achievements:
-            self.achievements.append(achievement["title"])
+            self.achievements.add(achievement["title"])
 
 
 class FullNotificationPrinter(AbstractObserver):
@@ -46,5 +46,22 @@ class FullNotificationPrinter(AbstractObserver):
         self.achievements = list()
 
     def update(self, achievement):
-        if achievement["text"] not in self.achievements:
-            self.achievements.append(achievement["text"])
+        if achievement not in self.achievements:
+            self.achievements.append(achievement)
+
+
+shortNotificationPrinter = ShortNotificationPrinter()
+fullNotificationPrinter = FullNotificationPrinter()
+
+observableEngine = ObservableEngine()
+observableEngine.subscribe(shortNotificationPrinter)
+observableEngine.subscribe(fullNotificationPrinter)
+
+observableEngine.notify({"title": "title1", "text": "text1"})
+observableEngine.notify({"title": "title2", "text": "text2"})
+observableEngine.notify({"title": "title1", "text": "text1"})
+observableEngine.notify({"title": "title4", "text": "text4"})
+
+print(shortNotificationPrinter.achievements)
+print('------------')
+print(fullNotificationPrinter.achievements)
