@@ -28,48 +28,41 @@ class EventSet:
 
 
 class NullHandler:
-    def __init__(self, nextHandler):
+    def __init__(self, nextHandler=None):
         self.nextHandler = nextHandler
 
-    def __init__(self):
-        pass
 
     def handle(self, obj, event):
-        pass
+        if self.nextHandler is not None:
+            self.nextHandler.handle(obj, event)
 
 
 class IntHandler(NullHandler):
-    def __init__(self, nextHandler):
-        self.nextHandler = nextHandler
 
     def handle(self, obj, event):
         if isinstance(event, EventGet) and event.t is int:
             return obj.integer_field
-        elif isinstance(event, EventSet) and event.value is int:
+        elif isinstance(event, EventSet) and type(event.value) is int:
             obj.integer_field = event.value
         else:
             return self.nextHandler.handle(obj, event)
 
 class FloatHandler(NullHandler):
-    def __init__(self, nextHandler):
-        self.nextHandler = nextHandler
 
     def handle(self, obj, event):
         if isinstance(event, EventGet) and event.t is float:
             return obj.float_field
-        elif isinstance(event, EventSet) and event.value is float:
+        elif isinstance(event, EventSet) and type(event.value) is float:
             obj.float_field = event.value
         else:
             return self.nextHandler.handle(obj, event)
 
 class StrHandler(NullHandler):
-    def __init__(self, nextHandler):
-        self.nextHandler = nextHandler
 
     def handle(self, obj, event):
         if isinstance(event, EventGet) and event.t is str:
             return obj.string_field
-        elif isinstance(event, EventSet) and event.value is str:
+        elif isinstance(event, EventSet) and type(event.value) is str:
             obj.string_field = event.value
         else:
             return self.nextHandler.handle(obj, event)
