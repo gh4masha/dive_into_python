@@ -1,5 +1,10 @@
 E_INT, E_FLOAT, E_STR = "INT", "FLOAT", "STR"
 
+class SomeObject:
+    def __init__(self):
+        self.integer_field = 0
+        self.float_field = 0.0
+        self.string_field = ""
 
 class EventGet:
     def __init__(self, prop):
@@ -53,3 +58,21 @@ class FloatHandler(NullHandler):
                 obj.float_field = event.prop;
         else:
             return super().handle(obj, event)
+
+if __name__=='__main__':
+
+    obj = SomeObject()
+    obj.integer_field = 42
+    obj.float_field = 3.14
+    obj.string_field = "some text"
+    chain = IntHandler(FloatHandler(StrHandler()))
+
+    print(chain.handle(obj, EventGet(int)))    #    42
+    print(chain.handle(obj, EventGet(float)))  #    3.14
+    print(chain.handle(obj, EventGet(str)))    #    'some text'
+    print(chain.handle(obj, EventSet(100)))
+    print(chain.handle(obj, EventGet(int)))    #    100
+    print(chain.handle(obj, EventSet(0.5)))
+    print(chain.handle(obj, EventGet(float)))  #    0.5
+    print(chain.handle(obj, EventSet('new text')))
+    print(chain.handle(obj, EventGet(str)))    #    'new text'
