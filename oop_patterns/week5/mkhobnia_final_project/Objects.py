@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 import random
-
+import yaml
 
 def create_sprite(img, sprite_size):
     icon = pygame.image.load(img).convert_alpha()
@@ -17,13 +17,25 @@ class Interactive(ABC):
     def interact(self, engine, hero):
         pass
 
-class AbstractObject(ABC):
+class AbstractObject(ABC, yaml.YAMLObject):
+
+    yaml_tag = u'objects'
+
+    @classmethod
+    def from_yaml(class_name, loader, node):
+        _map = class_name.get_map()
+        _obj = class_name.get_objects()
+        _obj.config = loader.construct_mapping(node)
+
     def __init__(self):
         pass
+
     def draw(self, display):
         pass
 
 class Ally(AbstractObject, Interactive):
+
+    yaml_tag = u'ally'
 
     def __init__(self, icon, action, position):
         self.sprite = icon
@@ -134,22 +146,57 @@ class Effect(Hero):
 # FIXME
 # add classes
 
+
+class Berserk(Effect):
+    def __init__(self, base):
+        super().__init__(base)
+
+    def apply_effect(self):
+        stats = self.base.get_stats()
+        stats["strength"] = stats.get("strength") + 7
+        stats["endurance"] = stats.get("endurance") + 7
+        stats["Intelligence"] = stats.get("intelligence") - 3
+        stats["Luck"] = stats.get("luck") + 7
+        return stats.copy()
+
+        # eff = self.base.get_positive_effects()
+        # eff.append("Berserk")
+        # return eff.copy()
+
+
+class Blessing(Effect):
+
+    def __init__(self, base):
+        super().__init__(base)
+
+    def apply_effect(self):
+        stats = self.base.get_stats()
+        stats["strength"] = stats.get("strength") + 2
+        stats["endurance"] = stats.get("endurance") + 2
+        stats["luck"] = stats.get("luck") + 2
+        stats["intelligence"] = stats.get("intelligence") + 2
+        return stats.copy()
+
+
+class Weakness(Effect):
+
+    def __init__(self, base):
+        super().__init__(base)
+
+    def apply_effect(self):
+        stats = self.base.get_stats()
+        stats["strength"] = stats.get("strength") - 4
+        stats["endurance"] = stats.get("endurance") - 4
+        return stats.copy()
+
+
 class Enemy(Creature, Interactive):
+
+    yaml_tag = u'enemies'
+
     def __init__(self, icon, stats, xp, position):
         super(Creature, self).__init__(icon, stats, position)
 
     def interact(self, engine, hero):
-        pass
-
-class Berserk(Hero):
-    def apply_effect(self):
-        pass
-
-class Blessing(Hero):
-    def apply_effect(self):
-        pass
-
-class Weakness(Hero):
-    def apply_effect(self):
-        pass
+        self.action(engine, hero)
 
