@@ -2,8 +2,6 @@ import pygame
 import random
 import math
 
-SCREEN_DIM = (800, 600)
-
 
 class Vec2d:
 
@@ -20,10 +18,10 @@ class Vec2d:
     def __mul__(self, k):
         return Vec2d(self.x * k, self.y * k)
 
-    def __scal_mull__(self, other):
+    def __mat_mull__(self, other):
         return Vec2d(self.x * other.x, self.y * other.y)
 
-    def len(self):
+    def __len__(self):
         return math.sqrt(self.x * self.x + self.y * self.y)
 
 
@@ -50,15 +48,14 @@ class Polyline():
 
 
 class Knot(Polyline):
-    # Сглаживание ломаной
 
+    # Сглаживание ломаной
     def __get_point(self, points, alpha, deg=None):
         if deg is None:
             deg = len(points) - 1
         if deg == 0:
             return points[0]
-        return points[deg].__mull__(alpha).__add__(
-            self.__get_point(points, alpha, deg - 1).__mull__(1 - alpha))
+        return points[deg]*alpha + self.__get_point(points, alpha, deg - 1)*(1 - alpha)
 
     def __get_points(self, base_points, count):
         alpha = 1 / count
@@ -69,8 +66,9 @@ class Knot(Polyline):
 
     # Персчитывание координат опорных точек
     def set_points(self, points, speeds):
+        SCREEN_DIM = (800, 600)
         for p in range(len(points)):
-            points[p] = Vec2d(points[p]).__add__(speeds[p])
+            points[p] = Vec2d(points[p][0], points[p][1]) + speeds[p]
             if points[p][0] > SCREEN_DIM[0] or points[p][0] < 0:
                 speeds[p] = (- speeds[p][0], speeds[p][1])
             if points[p][1] > SCREEN_DIM[1] or points[p][1] < 0:
@@ -83,11 +81,11 @@ class Knot(Polyline):
         for i in range(-2, len(points) - 2):
             ptn = []
             ptn.append(
-                Vec2d(points[i][0], points[i][1]).__add__(Vec2d(points[i + 1][0], points[i + 1][1])).__mull__(0.5))
+                (Vec2d(points[i][0], points[i][1])+Vec2d(points[i + 1][0], points[i + 1][1]))*0.5)
             ptn.append(Vec2d(points[i + 1][0], points[i + 1][1]))
             ptn.append(
-                Vec2d(points[i + 1][0], points[i + 1][1]).__add__(Vec2d(points[i + 2][0], points[i + 2][1])).__mull__(
-                    0.5))
+                (Vec2d(points[i + 1][0], points[i + 1][1])+Vec2d(points[i + 2][0], points[i + 2][1]))*
+                    0.5 )
 
             res.extend(self.__get_points(ptn, count))
         return res
@@ -118,7 +116,7 @@ class Knot(Polyline):
 # Основная программа
 if __name__ == "__main__":
     pygame.init()
-    gameDisplay = pygame.display.set_mode(SCREEN_DIM)
+    gameDisplay = pygame.display.set_mode((800, 600))
     pygame.display.set_caption("MyScreenSaver")
 
     steps = 35

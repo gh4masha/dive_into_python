@@ -38,24 +38,21 @@ class AbstractEffect(Hero, ABC):
         self.positive_effects = self.base.positive_effects.copy()
         self.negative_effects = self.base.negative_effects.copy()
 
-    # def get_stats(self):  # Возвращает итоговые хараетеристики
-    #     return self.stats.copy()
-
+    @abstractmethod
     def get_positive_effects(self):
         return self.base.get_positive_effects()
 
+    @abstractmethod
     def get_negative_effects(self):
         return self.base.get_negative_effects()
 
+    @abstractmethod
+    def get_stats(self):
+        pass
 
-class AbstractPositive(AbstractEffect):
+class AbstractPositive(AbstractEffect, ABC):
     def __init__(self, base):
         super().__init__(base)
-
-    # def get_stats(self):  # Возвращает итоговые хараетеристики
-    #     # после применения эффекта
-    #     pass
-
 
 class Berserk(AbstractPositive):
 
@@ -103,7 +100,7 @@ class Blessing(AbstractPositive):
         return stats.copy()
 
 
-class AbstractNegative(AbstractEffect):
+class AbstractNegative(AbstractEffect, ABC):
     def __init__(self, base):
         super().__init__(base)
 
