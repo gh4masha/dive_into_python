@@ -11,21 +11,16 @@ class AbstractLevel:
     def get_objects(cls):
         return cls.Objects()
 
-    class Map(ABC):
-        pass
-
-    class Objects(ABC):
-        pass
+    # class Map(ABC):
+    #     pass
+    #
+    # class Objects(ABC):
+    #     pass
 
 
 class EasyLevel(AbstractLevel):
-    # def get_map(self):
-    #     return EasyMap.Map()
-    #
-    # def get_objects(self):
-    #     return EasyObjects.Objects()
 
-    class Map(ABC):
+    class Map:
         def __init__(self):
             self.map = [[0 for j in range(5)] for i in range(5)]
             for i in range(5):
@@ -39,7 +34,7 @@ class EasyLevel(AbstractLevel):
         def get_map(self):
             return self.map
 
-    class Objects(ABC):
+    class Objects:
         def __init__(self):
             # размещаем переход на след. уровень
             self.objects = [('next_lvl', (2, 2))]
@@ -107,12 +102,6 @@ class MediumLevel(AbstractLevel):
 
 
 class HardLevel(AbstractLevel):
-    # def get_map(self):
-    #     return HardMap.Map()
-    #
-    # def get_objects(self):
-    #     return HardObjects.Objects()
-
     class Map:
         def __init__(self):
             self.map = [[0 for j in range(10)] for i in range(10)]
@@ -135,14 +124,12 @@ class HardLevel(AbstractLevel):
             self.objects = [('next_lvl', (5, 5))]
 
         def get_objects(self, map):
-            # размещаем врагов
             for obj_name in ['rat', 'snake']:
                 coord = (random.randint(1, 8), random.randint(1, 8))
-                # ищем случайную свободную локацию
                 intersect = True
                 while intersect:
                     intersect = False
-                    if map[coord[0]][coord[1]] == -1:
+                    if map.get_map()[coord[0]][coord[1]] == -1:
                         intersect = True
                         coord = (random.randint(1, 8), random.randint(1, 8))
                         continue
@@ -152,34 +139,25 @@ class HardLevel(AbstractLevel):
                             coord = (random.randint(1, 8), random.randint(1, 8))
 
                 self.objects.append((obj_name, coord))
-
             return self.objects
 
-# class EasyLevel(AbstractLevel):
-#     class Map:
-#         def get_map(self):
-#             return EasyMap.Map()
-#
-#     class Objects:
-#         def get_objects(self):
-#             return EasyObjects.Objects()
-#
-#
-# class MediumLevel(AbstractLevel):
-#     class Map:
-#         def get_map(self):
-#             return MediumMap.Map()
-#
-#     class Objects:
-#         def get_objects(self):
-#             return MediumObjects.Objects()
-#
-#
-# class HardLevel(AbstractLevel):
-#     class Map:
-#         def get_map(self):
-#             return HardMap.Map()
-#
-#     class Objects:
-#         def get_objects(self):
-#             return HardObjects.Objects()
+        # def get_objects(self, map):
+        #     # размещаем врагов
+        #     for obj_name in ['rat', 'snake']:
+        #         coord = (random.randint(1, 8), random.randint(1, 8))
+        #         # ищем случайную свободную локацию
+        #         intersect = True
+        #         while intersect:
+        #             intersect = False
+        #             if map[coord[0]][coord[1]] == -1:
+        #                 intersect = True
+        #                 coord = (random.randint(1, 8), random.randint(1, 8))
+        #                 continue
+        #             for obj in self.objects:
+        #                 if coord == obj[1]:
+        #                     intersect = True
+        #                     coord = (random.randint(1, 8), random.randint(1, 8))
+        #
+        #         self.objects.append((obj_name, coord))
+        #
+        #     return self.objects
