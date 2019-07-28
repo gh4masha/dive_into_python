@@ -4,7 +4,7 @@ import Service
 class GameEngine:
     objects = []
     map = None
-    hero = None
+    # hero = None
     level = -1
     working = True
     subscribers = set()

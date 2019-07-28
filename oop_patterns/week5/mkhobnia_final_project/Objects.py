@@ -17,7 +17,7 @@ class Interactive(ABC):
     def interact(self, engine, hero):
         pass
 
-class AbstractObject(ABC, yaml.YAMLObject):
+class AbstractObject(ABC):
 
     yaml_tag = u'objects'
 
@@ -43,8 +43,7 @@ class Ally(AbstractObject, Interactive):
         self.position = position
 
     def interact(self, engine, hero):
-        self.action(engine, hero)
-
+        self.interact(engine, hero)
 
 
 class Creature(AbstractObject):
@@ -195,8 +194,17 @@ class Enemy(Creature, Interactive):
     yaml_tag = u'enemies'
 
     def __init__(self, icon, stats, xp, position):
-        super(Creature, self).__init__(icon, stats, position)
+        super(Enemy, self).__init__(icon, stats, position)
 
     def interact(self, engine, hero):
         self.action(engine, hero)
 
+
+#
+# objects = yaml.load('objects.yml')
+#
+# # Read YAML file
+# with open('objects.yml', 'r') as stream:
+#     data_loaded = yaml.safe_load(stream)
+#
+# print(data_loaded)

@@ -73,19 +73,31 @@ def add_gold(engine, hero):
 
 
 class MapFactory(yaml.YAMLObject):
+    yaml_tag = u'levels'
+    yaml_loader = yaml.SafeLoader
 
     @classmethod
     def from_yaml(cls, loader, node):
+        _map = cls.get_map()
+        _obj = cls.get_objects()
+        _obj.m = loader.construct_mapping(node)  # CHECK THE SOURCE
 
+        return {'map': _map, 'obj': _obj}
         # FIXME
         # get _map and _obj
 
-        return {'map': _map, 'obj': _obj}
+    @classmethod
+    def get_map(Class):
+        return Class.Map()
+
+    @classmethod
+    def get_objects(Class):
+        return Class.Objects()
 
 
 class EndMap(MapFactory):
 
-    yaml_tag = "!end_map"
+    yaml_tag = u'!end_map'
 
     class Map:
         def __init__(self):
@@ -118,7 +130,7 @@ class EndMap(MapFactory):
 
 
 class RandomMap(MapFactory):
-    yaml_tag = "!random_map"
+    yaml_tag = u'!random_map'
 
     class Map:
 
@@ -210,6 +222,56 @@ class RandomMap(MapFactory):
 # FIXME
 # add classes for YAML !empty_map and !special_map{}
 
+
+class EmptyMap(MapFactory):
+    yaml_tag = '!empty_map'
+
+    class Map:
+
+        def __init__(self):
+            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+
+        def get_map(self):
+            return self.Map
+
+    class Objects:
+
+        def __init__(self):
+            self.objects = []
+
+        def get_objects(self, _map):
+            return self.objects
+
+
+class SpecialMap(MapFactory):
+
+    yaml_tag = u'!special_map'
+
+    class Map:
+        def __init__(self):
+            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+
+        def get_map(self):
+            return self.Map
+
+    class Objects:
+
+        def __init__(self):
+            self.objects = []
+
+        def get_objects(self, _map):
+            for obj_name in self.m:
+                if obj_name in object_list_prob['enemies']:
+                    coord = (random.randint(1, 30), random.randint(1, 22))
+                    while _map[coord[1]][coord[0]] == wall:
+                        coord = (random.randint(1, 30), random.randint(1, 22))
+
+                    prop = object_list_prob['enemies'][obj_name]
+                    self.objects.append(Objects.Enemy(
+                        prop['sprite'], prop, prop['experience'], coord))
+
+            return self.objects
+
 wall = [0]
 floor1 = [0]
 floor2 = [0]
@@ -264,7 +326,16 @@ def service_init(sprite_size, full=True):
     file.close()
 
     if full:
-        file = open("levels.yml", "r")
-        level_list = yaml.load(file.read())['levels']
+        file = open('levels.yml', 'r')
+        level_list = yaml.safe_load(file.read())['levels']
         level_list.append({'map': EndMap.Map(), 'obj': EndMap.Objects()})
         file.close()
+
+
+
+#
+# # Read YAML file
+# with open('levels.yml', 'r') as stream:
+#     data_loaded = yaml.safe_load(stream)
+#
+# print(data_loaded)
