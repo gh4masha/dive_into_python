@@ -1,9 +1,6 @@
 import pygame
 import collections
 
-# import Main
-import Service
-
 colors = {
     "black": (0, 0, 0, 255),
     "white": (255, 255, 255, 255),
@@ -52,14 +49,13 @@ class GameSurface(ScreenHandle):
     def draw_map(self):
 
         # FIXME || calculate (min_x,min_y) - left top corner
+        visible_cells_x = int(640 / self.game_engine.sprite_size)
+        visible_cells_y = int(480 / self.game_engine.sprite_size)
 
-        min_x = 0
-        min_y = 0
-        while self.game_engine.map[min_x][min_y] == Service.wall:
-            min_x += 1
-            min_y += 1
+        min_x = int(self.game_engine.hero.position[0] / visible_cells_x) * visible_cells_x
+        min_y = int(self.game_engine.hero.position[1] / visible_cells_y) * visible_cells_y
+
     ##
-
         if self.game_engine.map:
             for i in range(len(self.game_engine.map[0]) - min_x):
                 for j in range(len(self.game_engine.map) - min_y):
@@ -72,11 +68,12 @@ class GameSurface(ScreenHandle):
         size = self.game_engine.sprite_size
     # FIXME || calculate (min_x,min_y) - left top corner
 
-        min_x = 0
-        min_y = 0
-        while self.game_engine.map[min_x][min_y] == Service.wall:
-            min_x += 1
-            min_y += 1
+        visible_cells_x = int(640 / self.game_engine.sprite_size)
+        visible_cells_y = int(480 / self.game_engine.sprite_size)
+
+        min_x = int(self.game_engine.hero.position[0] / visible_cells_x) * visible_cells_x
+        min_y = int(self.game_engine.hero.position[1] / visible_cells_y) * visible_cells_y
+
     ##
         self.blit(sprite, ((coord[0] - min_x) * self.game_engine.sprite_size,
                            (coord[1] - min_y) * self.game_engine.sprite_size))
@@ -85,11 +82,11 @@ class GameSurface(ScreenHandle):
         size = self.game_engine.sprite_size
     # FIXME || calculate (min_x,min_y) - left top corner
 
-        min_x = 0
-        min_y = 0
-        while self.game_engine.map[min_x][min_y] == Service.wall:
-            min_x += 1
-            min_y += 1
+        visible_cells_x = int(640 / self.game_engine.sprite_size)
+        visible_cells_y = int(480 / self.game_engine.sprite_size)
+
+        min_x = int (self.game_engine.hero.position[0] / visible_cells_x ) * visible_cells_x
+        min_y = int (self.game_engine.hero.position[1] / visible_cells_y ) * visible_cells_y
     ##
         self.draw_map()
         for obj in self.game_engine.objects:
