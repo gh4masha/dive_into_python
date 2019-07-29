@@ -32,6 +32,8 @@ class ScreenHandle(pygame.Surface):
     # FIXME connect_engine
     def connect_engine(self, engine):
         self.game_engine = engine
+        if self.successor is not None:
+            self.successor.connect_engine(engine)
 
 
 class GameSurface(ScreenHandle):
@@ -39,12 +41,12 @@ class GameSurface(ScreenHandle):
     def connect_engine(self, engine):
         # FIXME save engine and send it to next in chain
         self.game_engine = engine
-        # self.successor=engine
+        if self.successor is not None:
+            self.successor.connect_engine(engine)
 
     def draw_hero(self):
         # self.game_engine.hero.draw(self)
         self.blit(self.game_engine.hero.sprite, (self.game_engine.hero.position[0]*self.game_engine.sprite_size, self.game_engine.hero.position[1]*self.game_engine.sprite_size))
-
 
     def draw_map(self):
 
@@ -94,9 +96,11 @@ class GameSurface(ScreenHandle):
                                       (obj.position[1] - min_y) * self.game_engine.sprite_size))
         self.draw_hero()
 
-    # draw next surface in chain
-    #     self.successor.draw(Main.drawer)
-    #     Main.gameDisplay.blit(Main.drawer, (0, 0))
+        # draw next surface in chain
+        #     self.successor.draw(Main.drawer)
+
+        canvas.blit(self.successor, self.next_coord)
+        self.successor.draw(canvas)
     #     Main.drawer.draw(self.successor)
     #
     #     pygame.display.update()
@@ -111,7 +115,8 @@ class ProgressBar(ScreenHandle):
     def connect_engine(self, engine):
         # FIXME save engine and send it to next in chain
         self.engine = engine
-        self.successor = engine
+        if self.successor is not None:
+            self.successor.connect_engine(engine)
 
     def draw(self, canvas):
         self.fill(colors["wooden"])
@@ -166,7 +171,11 @@ class ProgressBar(ScreenHandle):
                   (550, 70))
 
         # FIXME
-    # draw next surface in chain
+        # draw next surface in chain
+
+        canvas.blit(self.successor, self.next_coord)
+
+        self.successor.draw(canvas)
     #     self.successor.draw(Main.drawer)
     #     Main.gameDisplay.blit(Main.drawer, (0, 0))
     #     Main.drawer.draw(self.successor)
@@ -194,21 +203,22 @@ class InfoWindow(ScreenHandle):
             self.blit(font.render(text, True, colors["black"]),
                       (5, 20 + 18 * i))
 
-    # FIXME
-    # draw next surface in chain
+        # FIXME
+        # draw next surface in chain
+        canvas.blit(self.successor, self.next_coord)
+        self.successor.draw(canvas)
     #     self.successor.draw(Main.drawer)
     #     Main.gameDisplay.blit(Main.drawer, (0, 0))
     #     Main.drawer.draw(self.successor)
     #
     #     pygame.display.update()
 
-
     def connect_engine(self, engine):
         # FIXME set this class as Observer to engine and send it to next in
         # chain
         self.engine=engine
-        self.successor=engine
-
+        if self.successor is not None:
+            self.successor.connect_engine(engine)
 
 
 class HelpWindow(ScreenHandle):
@@ -231,7 +241,8 @@ class HelpWindow(ScreenHandle):
     def connect_engine(self, engine):
         # FIXME save engine and send it to next in chain
         self.engine = engine
-        self.successor=engine
+        if self.successor is not None:
+            self.successor.connect_engine(engine)
 
     def draw(self, canvas):
         alpha = 0
@@ -249,11 +260,9 @@ class HelpWindow(ScreenHandle):
                           (50, 50 + 30 * i))
                 self.blit(font2.render(text[1], True, ((128, 128, 255))),
                           (150, 50 + 30 * i))
-    # FIXME
-    # draw next surface in chain
-    #     self.successor.draw(Main.drawer)
-    #     Main.gameDisplay.blit(Main.drawer, (0, 0))
-    #     Main.drawer.draw(self.successor)
-    #
+        # FIXME
+        # draw next surface in chain
+        canvas.blit(self.successor, self.next_coord)
+        self.successor.draw(canvas)
     #     pygame.display.update()
 
