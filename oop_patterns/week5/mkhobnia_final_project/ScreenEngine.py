@@ -45,8 +45,23 @@ class GameSurface(ScreenHandle):
             self.successor.connect_engine(engine)
 
     def draw_hero(self):
-        # self.game_engine.hero.draw(self)
-        self.blit(self.game_engine.hero.sprite, (self.game_engine.hero.position[0]*self.game_engine.sprite_size, self.game_engine.hero.position[1]*self.game_engine.sprite_size))
+        visible_cells_x = int(640 / self.game_engine.sprite_size)
+        visible_cells_y = int(480 / self.game_engine.sprite_size)
+
+        if self.game_engine.hero.position[0] % (visible_cells_x - 3) == 1:
+            min_x = self.game_engine.hero.position[0] - 1
+        else:
+            min_x = int((self.game_engine.hero.position[0] - 1) / (visible_cells_x - 3)) * (visible_cells_x - 3)
+        min_x = min(min_x, len(self.game_engine.map) - visible_cells_x)
+
+        if self.game_engine.hero.position[1] % (visible_cells_y - 3) == 1:
+            min_y = self.game_engine.hero.position[1] - 1
+        else:
+            min_y = int((self.game_engine.hero.position[1] - 1) / (visible_cells_y - 3)) * (visible_cells_y - 3)
+        min_y = min(min_y, len(self.game_engine.map) - visible_cells_y)
+
+        self.blit(self.game_engine.hero.sprite, ((self.game_engine.hero.position[0]-min_x)*self.game_engine.sprite_size,
+                                                 (self.game_engine.hero.position[1]-min_y)*self.game_engine.sprite_size))
 
     def draw_map(self):
 
@@ -54,10 +69,19 @@ class GameSurface(ScreenHandle):
         visible_cells_x = int(640 / self.game_engine.sprite_size)
         visible_cells_y = int(480 / self.game_engine.sprite_size)
 
-        min_x = int(self.game_engine.hero.position[0] / visible_cells_x) * visible_cells_x
-        min_y = int(self.game_engine.hero.position[1] / visible_cells_y) * visible_cells_y
+        if self.game_engine.hero.position[0] % (visible_cells_x - 3) == 1:
+            min_x = self.game_engine.hero.position[0] - 1
+        else:
+            min_x = int((self.game_engine.hero.position[0] - 1) / (visible_cells_x - 3)) * (visible_cells_x - 3)
+        min_x = min(min_x, len(self.game_engine.map) - visible_cells_x)
 
-    ##
+        if self.game_engine.hero.position[1] % (visible_cells_y - 3) == 1:
+            min_y = self.game_engine.hero.position[1] - 1
+        else:
+            min_y = int((self.game_engine.hero.position[1] - 1) / (visible_cells_y - 3)) * (visible_cells_y - 3)
+        min_y = min(min_y, len(self.game_engine.map) - visible_cells_y)
+
+        ##
         if self.game_engine.map:
             for i in range(len(self.game_engine.map[0]) - min_x):
                 for j in range(len(self.game_engine.map) - min_y):
@@ -73,10 +97,19 @@ class GameSurface(ScreenHandle):
         visible_cells_x = int(640 / self.game_engine.sprite_size)
         visible_cells_y = int(480 / self.game_engine.sprite_size)
 
-        min_x = int(self.game_engine.hero.position[0] / visible_cells_x) * visible_cells_x
-        min_y = int(self.game_engine.hero.position[1] / visible_cells_y) * visible_cells_y
+        if self.game_engine.hero.position[0] % (visible_cells_x - 3) == 1:
+            min_x = self.game_engine.hero.position[0] - 1
+        else:
+            min_x = int((self.game_engine.hero.position[0] - 1) / (visible_cells_x - 3)) * (visible_cells_x - 3)
+        min_x = min(min_x, len(self.game_engine.map) - visible_cells_x)
 
-    ##
+        if self.game_engine.hero.position[1] % (visible_cells_y - 3) == 1:
+            min_y = self.game_engine.hero.position[1] - 1
+        else:
+            min_y = int((self.game_engine.hero.position[1] - 1) / (visible_cells_y - 3)) * (visible_cells_y - 3)
+        min_y = min(min_y, len(self.game_engine.map) - visible_cells_y)
+
+        ##
         self.blit(sprite, ((coord[0] - min_x) * self.game_engine.sprite_size,
                            (coord[1] - min_y) * self.game_engine.sprite_size))
 
@@ -87,9 +120,18 @@ class GameSurface(ScreenHandle):
         visible_cells_x = int(640 / self.game_engine.sprite_size)
         visible_cells_y = int(480 / self.game_engine.sprite_size)
 
-        min_x = int (self.game_engine.hero.position[0] / visible_cells_x ) * visible_cells_x
-        min_y = int (self.game_engine.hero.position[1] / visible_cells_y ) * visible_cells_y
-    ##
+        if self.game_engine.hero.position[0] % (visible_cells_x -3) == 1:
+            min_x = self.game_engine.hero.position[0] - 1
+        else:
+            min_x = int((self.game_engine.hero.position[0] - 1) / (visible_cells_x - 3)) * (visible_cells_x - 3)
+        min_x = min(min_x, len(self.game_engine.map) - visible_cells_x)
+
+        if self.game_engine.hero.position[1] % (visible_cells_y - 3) == 1:
+            min_y = self.game_engine.hero.position[1] - 1
+        else:
+            min_y = int((self.game_engine.hero.position[1] - 1) / (visible_cells_y - 3)) * (visible_cells_y - 3)
+        min_y = min(min_y, len(self.game_engine.map) - visible_cells_y)
+        ##
         self.draw_map()
         for obj in self.game_engine.objects:
             self.blit(obj.sprite[0], ((obj.position[0] - min_x) * self.game_engine.sprite_size,
