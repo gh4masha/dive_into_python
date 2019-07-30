@@ -97,6 +97,9 @@ while engine.working:
                     elif event.key == pygame.K_RIGHT:
                         engine.move_right()
                         iteration += 1
+                    if engine.is_next_level:
+                        Service.reload_game(engine, hero)
+                        engine.is_next_level=False
                 else:
                     if event.key == pygame.K_RETURN:
                         create_game()

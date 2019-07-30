@@ -72,6 +72,13 @@ def add_gold(engine, hero):
         engine.notify(f"{gold} gold added")
 
 
+def fight_with_enemy(engine, hero, enemy):
+    hero.stats['strength'] += enemy.stats['strength']
+    hero.stats['endurance'] += enemy.stats['endurance']
+    hero.stats['intelligence'] += enemy.stats['intelligence']
+    hero.stats['luck'] += enemy.stats['luck']
+    hero.exp += enemy.stats['experience']
+
 class MapFactory(yaml.YAMLObject):
     yaml_tag = u'levels'
     yaml_loader = yaml.SafeLoader
@@ -80,7 +87,7 @@ class MapFactory(yaml.YAMLObject):
     def from_yaml(cls, loader, node):
         _map = cls.get_map()
         _obj = cls.get_objects()
-        _obj.m = loader.construct_mapping(node)  # CHECK THE SOURCE
+        _obj.obj_yaml_info = loader.construct_mapping(node)  # CHECK THE SOURCE
 
         return {'map': _map, 'obj': _obj}
         # FIXME
@@ -250,7 +257,12 @@ class SpecialMap(MapFactory):
     class Map:
         def __init__(self):
             self.Map = [[0 for _ in range(41)] for _ in range(41)]
-
+            for i in range(41):
+                for j in range(41):
+                    if i == 0 or j == 0 or i == 40 or j == 40:
+                        self.Map[j][i] = wall
+                    else:
+                        self.Map[j][i] = floor1
         def get_map(self):
             return self.Map
 
@@ -260,15 +272,17 @@ class SpecialMap(MapFactory):
             self.objects = []
 
         def get_objects(self, _map):
-            for obj_name in self.m:
-                if obj_name in object_list_prob['enemies']:
-                    coord = (random.randint(1, 30), random.randint(1, 22))
-                    while _map[coord[1]][coord[0]] == wall:
+            for obj_name in self.obj_yaml_info:
+                for i in range(0, self.obj_yaml_info[obj_name]):
+                    if obj_name in object_list_prob['enemies']:
                         coord = (random.randint(1, 30), random.randint(1, 22))
+                        while _map[coord[1]][coord[0]] == wall:
+                            coord = (random.randint(1, 30), random.randint(1, 22))
 
-                    prop = object_list_prob['enemies'][obj_name]
-                    self.objects.append(Objects.Enemy(
-                        prop['sprite'], prop, prop['experience'], coord))
+                        prop = object_list_prob['enemies'][obj_name]
+                        self.objects.append(Objects.Enemy(
+                            prop['sprite'], prop, prop['experience'], coord))
+                        prop['action'] = fight_with_enemy
 
             return self.objects
 
@@ -322,7 +336,7 @@ def service_init(sprite_size, full=True):
         prop_tmp = object_list_tmp['enemies'][enemy]
         prop['sprite'][0] = create_sprite(
             os.path.join(ENEMY_TEXTURE, prop_tmp['sprite'][0]), sprite_size)
-
+        prop['action'] = fight_with_enemy
     file.close()
 
     if full:

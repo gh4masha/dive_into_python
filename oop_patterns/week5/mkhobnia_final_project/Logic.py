@@ -11,6 +11,7 @@ class GameEngine:
     score = 0.
     game_process = True
     show_help = False
+    is_next_level = False
 
     def subscribe(self, obj):
         self.subscribers.add(obj)
@@ -32,6 +33,12 @@ class GameEngine:
             if list(obj.position) == self.hero.position:
                 self.delete_object(obj)
                 obj.interact(self, self.hero)
+
+        if len(self.objects) < 3:
+            next_level = self.hero.level_up()
+            for msg in next_level:
+                self.is_next_level = True
+                print(msg)
 
     # MOVEMENT
     def move_up(self):
