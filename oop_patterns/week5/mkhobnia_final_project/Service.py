@@ -123,7 +123,10 @@ class EndMap(MapFactory):
             self.Map = list(map(list, self.Map))
             for i in self.Map:
                 for j in range(len(i)):
-                    i[j] = wall if i[j] == '0' else floor1
+                    if i[j] == '0':
+                        i[j] = wall
+                    else:
+                        i[j] = floor1
          
         def get_map(self):
             return self.Map
@@ -236,7 +239,7 @@ class EmptyMap(MapFactory):
     class Map:
 
         def __init__(self):
-            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+            self.Map = [[floor3 for _ in range(41)] for _ in range(41)]
 
         def get_map(self):
             return self.Map
@@ -342,7 +345,7 @@ def service_init(sprite_size, full=True):
     if full:
         file = open('levels.yml', 'r')
         level_list = yaml.safe_load(file.read())['levels']
-        level_list.append({'map': EndMap.Map(), 'obj': EndMap.Objects()})
+        level_list.append({'map': EndMap.get_map(), 'obj': EndMap.get_objects()})
         file.close()
 
 

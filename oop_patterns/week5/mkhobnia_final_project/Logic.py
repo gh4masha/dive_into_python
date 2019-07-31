@@ -34,7 +34,7 @@ class GameEngine:
                 self.delete_object(obj)
                 obj.interact(self, self.hero)
 
-        if len(self.objects) < 3:
+        if len(self.objects) < 3 or self.hero.exp > 100 * self.level:
             next_level = self.hero.level_up()
             for msg in next_level:
                 self.is_next_level = True
