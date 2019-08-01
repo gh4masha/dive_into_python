@@ -21,7 +21,7 @@ def reload_game(engine, hero):
     global level_list
     level_list_max = len(level_list) - 1
     engine.level += 1
-    hero.position = [1, 1]
+    hero.position = [7, 1]
     engine.objects = []
     generator = level_list[min(engine.level, level_list_max)]
     _map = generator['map'].get_map()
@@ -90,8 +90,6 @@ class MapFactory(yaml.YAMLObject):
         _obj.obj_yaml_info = loader.construct_mapping(node)  # CHECK THE SOURCE
 
         return {'map': _map, 'obj': _obj}
-        # FIXME
-        # get _map and _obj
 
     @classmethod
     def get_map(Class):
@@ -229,17 +227,19 @@ class RandomMap(MapFactory):
             return self.objects
 
 
-# FIXME
-# add classes for YAML !empty_map and !special_map{}
-
-
 class EmptyMap(MapFactory):
     yaml_tag = '!empty_map'
 
     class Map:
 
         def __init__(self):
-            self.Map = [[floor3 for _ in range(41)] for _ in range(41)]
+            self.Map = [[0 for _ in range(41)] for _ in range(41)]
+            for i in range(41):
+                for j in range(41):
+                    if i == 0 or j == 0 or i == 40 or j == 40:
+                        self.Map[j][i] = wall
+                    else:
+                        self.Map[j][i] = floor3
 
         def get_map(self):
             return self.Map
@@ -348,11 +348,3 @@ def service_init(sprite_size, full=True):
         level_list.append({'map': EndMap.get_map(), 'obj': EndMap.get_objects()})
         file.close()
 
-
-
-#
-# # Read YAML file
-# with open('levels.yml', 'r') as stream:
-#     data_loaded = yaml.safe_load(stream)
-#
-# print(data_loaded)

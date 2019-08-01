@@ -16,6 +16,7 @@ class Interactive(ABC):
     def interact(self, engine, hero):
         pass
 
+
 class AbstractObject(ABC):
 
     yaml_tag = u'objects'
@@ -31,6 +32,7 @@ class AbstractObject(ABC):
 
     def draw(self, display):
         pass
+
 
 class Ally(AbstractObject, Interactive):
 
@@ -141,10 +143,6 @@ class Effect(Hero):
         pass
 
 
-# FIXME
-# add classes
-
-
 class Berserk(Effect):
     def __init__(self, base):
         super().__init__(base)
@@ -156,10 +154,6 @@ class Berserk(Effect):
         stats["Intelligence"] = stats.get("intelligence") - 3
         stats["Luck"] = stats.get("luck") + 7
         return stats.copy()
-
-        # eff = self.base.get_positive_effects()
-        # eff.append("Berserk")
-        # return eff.copy()
 
 
 class Blessing(Effect):
@@ -199,14 +193,3 @@ class Enemy(Creature, Interactive):
 
     def interact(self, engine, hero):
         self.action(engine, hero, self)
-
-
-
-#
-# objects = yaml.load('objects.yml')
-#
-# # Read YAML file
-# with open('objects.yml', 'r') as stream:
-#     data_loaded = yaml.safe_load(stream)
-#
-# print(data_loaded)
