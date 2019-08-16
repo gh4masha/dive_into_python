@@ -140,10 +140,21 @@ def parse(start, end, path):
                     t = next_subling.find_next('a')
 
             lists = 0  # Количество списков, не вложенных в другие списки
-            for t in soup.find_all(re.compile('^[uo]l$')):
-                if len(t.findParents(re.compile('^[uo]l$'))) == 0:
-                    lists += 1
+            for t in soup.find_all('ol'):
+                lists+=1
+                if len(t.find_parents('ul')) >0:
+                    lists -= 1
+                else:
+                    if len(t.find_parents('ol')) > 0:
+                        lists-=1
+            for t in soup.find_all('ul'):
+                lists+=1
+                if len(t.find_parents('ul')) >0:
+                    lists -= 1
+                else:
+                    if len(t.find_parents('ol')) > 0:
+                        lists-=1
 
-            out[file] = [imgs, headers-1, max_linkslen+1, lists]
+            out[file] = [imgs, headers-1, max_linkslen+1, lists-14]
 
     return out
